@@ -8,7 +8,8 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Http\Responses\ApiErrorResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
-class storeWorkerEmploymentHistoryRequest extends FormRequest
+
+class updateWorkerEmploymentHistoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,28 +27,21 @@ class storeWorkerEmploymentHistoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'workerEmail'=>'required|email|exists:workers,email',
-            'companyName'=>'required|string',
-            'jobTitle'=>'required|string',
-            'startDate'=>'required|date_format:Y-m-d',
+            'workerEmploymentId'=>'required|numeric|exists:workerEmploymentHistories,id',
+            'endDate'=>'required|date_format:Y-m-d',
         ];
     }
 
     public function messages(): array 
     {
         return [
-            'workerEmail.required' => 'Email address is required.',
-            'workerEmail.email' => 'Email address must be a valid email address.',
-            'workerEmail.exists' => 'The provided email address does not exist.',
-            'companyName.required'=> 'Company Name is required.',
-            'companyName.string' => 'Company name must be a valid string.',
-            'jobTitle.required'=>'Job title is required.',
-            'jobTitle.string' => 'Job title must be a valid string.',
-            'startDate.required'=>'Start date is required.',
-            'startDate.date_format' => 'Start date format is invalid. Please use the format "YYYY-MM-DD".',
+            'workerEmploymentId.required' => 'Worker employment id is required.',
+            'workerEmploymentId.numeric' => 'Email address must be a valid numeric.',
+            'workerEmploymentId.exists' => 'The worker employment id does not exist.',
+            'endDate.required'=> 'End Date is required.',
+            'endDate.date_format' => 'Start date format is invalid. Please use the format "YYYY-MM-DD".',
         ];
     }
-
 
     protected function failedValidation(Validator $validator):JsonResponse
     {

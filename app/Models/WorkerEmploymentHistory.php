@@ -14,7 +14,6 @@ class WorkerEmploymentHistory extends Model
     protected $fillable = [
         'workerId','companyName','jobTitle','startDate', 'endDate',
     ];
-
     protected $dates = [
         'startDate','endDate','deleted_at'
     ];

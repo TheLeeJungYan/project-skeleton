@@ -10,6 +10,8 @@ use App\Models\Worker;
 use App\Http\Requests\StoreWorkerRequest;
 use App\Http\Responses\ApiSuccessResponse;
 use App\Http\Responses\ApiErrorResponse;
+use App\Http\Resources\WorkerCollection;
+use App\Http\Resources\WorkerResource;
 use DB;
 
 class WorkerController extends Controller
@@ -17,7 +19,8 @@ class WorkerController extends Controller
     public function index():JsonResponse
     {
         try{
-            $workers = Worker::select(
+            
+            $worker = Worker::select(
                 'id',
                 'firstName',
                 'lastName',
@@ -25,36 +28,43 @@ class WorkerController extends Controller
                 )
                 ->with('workerEmploymentHistories')
                 ->get();
-            $value = [
-                'workers'=>$workers
+            $workerResources  = WorkerResource::collection($worker);
+
+            $responseData  = [
+                'workers'=>$workerResources 
             ];
-            return new ApiSuccessResponse($value,Response::HTTP_OK);
+
+            return new ApiSuccessResponse($responseData,Response::HTTP_OK);
+
         }catch(\Exception  $e){
          
             $statusCode = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $e->getStatusCode() 
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
             return new ApiErrorResponse($e->getMessage(),$statusCode);
+
         }   
     }
 
-    public function create(StoreWorkerRequest $request)
+    public function create(StoreWorkerRequest $request):JsonResponse
     {
         try{
-            DB::beginTransaction();
+
             $validatedData = $request->validated();
             $worker = Worker::create($validatedData);
             $id = [
                 'id'=>$worker->id
             ];
-            DB::commit();
-            return new ApiSuccessResponse($id,Response::HTTP_OK);     
+            
+            return new ApiSuccessResponse($id,Response::HTTP_CREATED); 
+
         }catch(\Exception  $e){
-            DB::rollBack();
+
             $statusCode = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $e->getStatusCode() 
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
             return new ApiErrorResponse($e->getMessage(),$statusCode);
+
         }
     
     }

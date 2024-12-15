@@ -19,6 +19,7 @@ Route::middleware([EnsureJsonRequest::class])->group(function () {
 
   Route::controller(WorkerEmploymentHistoryController::class)->group(function(){
     Route::post('/employment','create');
+    Route::patch('/employment','update');
   });
   
 });
