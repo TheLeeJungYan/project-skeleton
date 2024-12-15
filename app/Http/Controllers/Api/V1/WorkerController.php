@@ -19,7 +19,7 @@ class WorkerController extends Controller
     public function index():JsonResponse
     {
         try{
-            
+
             $worker = Worker::select(
                 'id',
                 'firstName',
@@ -29,20 +29,19 @@ class WorkerController extends Controller
                 ->with('workerEmploymentHistories')
                 ->get();
             $workerResources  = WorkerResource::collection($worker);
-
             $responseData  = [
                 'workers'=>$workerResources 
             ];
-
             return new ApiSuccessResponse($responseData,Response::HTTP_OK);
 
         }catch(\Exception  $e){
-         
+
             $statusCode = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $e->getStatusCode() 
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            return new ApiErrorResponse($e->getMessage(),$statusCode);
-
+            $message = $e->getMessage();
+            return new ApiErrorResponse($message,$statusCode);
+            
         }   
     }
 
@@ -55,7 +54,6 @@ class WorkerController extends Controller
             $id = [
                 'id'=>$worker->id
             ];
-            
             return new ApiSuccessResponse($id,Response::HTTP_CREATED); 
 
         }catch(\Exception  $e){
@@ -63,8 +61,9 @@ class WorkerController extends Controller
             $statusCode = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $e->getStatusCode() 
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            return new ApiErrorResponse($e->getMessage(),$statusCode);
-
+            $message = $e->getMessage();
+            return new ApiErrorResponse($message,$statusCode);
+            
         }
     
     }

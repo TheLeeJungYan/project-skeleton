@@ -48,8 +48,9 @@ class StoreWorkerRequest extends FormRequest
     protected function failedValidation(Validator $validator):JsonResponse
     {
         $errors = $validator->errors();
+        $statusCode = Response::HTTP_BAD_REQUEST;
         throw new HttpResponseException(
-            new ApiErrorResponse($errors,Response::HTTP_BAD_REQUEST)
+            new ApiErrorResponse($errors,$statusCode)
         );
     }
 }

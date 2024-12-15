@@ -26,32 +26,34 @@ class WorkerEmploymentHistoryController extends Controller
                         ->with(['workerEmploymentHistories'=>function($query){
                             $query->whereNull('endDate');
                         }])->first();
-
             if($worker && !$worker->workerEmploymentHistories->isEmpty()){
                 throw new ActiveEmploymentException();
             }
-            
             $workerEmploymentHistory = WorkerEmploymentHistory::create([
                 'workerId'=>$worker->id,
                 'companyName'=>$request->input('companyName'),
                 'jobTitle'=>$request->input('jobTitle'),
                 'startDate'=>$request->input('startDate')
             ]);
-
             $responseData = [
                 'id'=>$workerEmploymentHistory->id
             ];
-            
             return new ApiSuccessResponse($responseData,Response::HTTP_CREATED);  
 
         }catch(ActiveEmploymentException $e){
-            return new ApiErrorResponse($e->getMessage(),$e->getStatusCode());
+
+            $statusCode = $e->getStatusCode();
+            return new ApiErrorResponse($e->getMessage(),$statusCode);
+
         }
         catch(\Exception  $e){
+
             $statusCode = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $e->getStatusCode() 
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            return new ApiErrorResponse($e->getMessage(),$statusCode);
+            $message = $e->getMessage();
+            return new ApiErrorResponse($message,$statusCode);
+            
         }
     }
 
@@ -59,6 +61,7 @@ class WorkerEmploymentHistoryController extends Controller
     {
         
         try{
+
             $validatedData = $request->validated();
             $workerEmploymentHistory = WorkerEmploymentHistory::find($request->input('workerEmploymentId'));
             $workerEmploymentHistory->update([
@@ -68,11 +71,15 @@ class WorkerEmploymentHistoryController extends Controller
                 'id'=>$workerEmploymentHistory->id
             ];
             return new ApiSuccessResponse($responseData,Response::HTTP_OK);  
+
         }catch(\Exception  $e){
+
             $statusCode = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpException
                 ? $e->getStatusCode() 
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            return new ApiErrorResponse($e->getMessage(),$statusCode);
+            $message = $e->getMessage();
+            return new ApiErrorResponse($message,$statusCode);
+
         }
       
     }

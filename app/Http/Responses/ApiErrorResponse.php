@@ -23,6 +23,13 @@ class ApiErrorResponse extends JsonResponse
                 'message'=>$message
             ]
         ];
+        $request = request();
+        \Log::error($message, [
+            'ip' => $request->ip(),
+            'route' => $request->path(),
+            'method' => $request->method(),
+            'statusCode' => $statusCode,
+        ]);
         parent::__construct(
             $error,
             $statusCode,
