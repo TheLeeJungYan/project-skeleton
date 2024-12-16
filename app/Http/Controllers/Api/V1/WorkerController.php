@@ -45,6 +45,7 @@ class WorkerController extends Controller
         }   
     }
 
+  
     public function create(StoreWorkerRequest $request):JsonResponse
     {
         try{

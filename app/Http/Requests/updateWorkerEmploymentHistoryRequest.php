@@ -39,7 +39,7 @@ class updateWorkerEmploymentHistoryRequest extends FormRequest
             'workerEmploymentId.numeric' => 'Email address must be a valid numeric.',
             'workerEmploymentId.exists' => 'The worker employment id does not exist.',
             'endDate.required'=> 'End Date is required.',
-            'endDate.date_format' => 'Start date format is invalid. Please use the format "YYYY-MM-DD".',
+            'endDate.date_format' => 'End date format is invalid. Please use the format "YYYY-MM-DD".',
         ];
     }
 
