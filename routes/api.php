@@ -23,7 +23,3 @@ Route::middleware([EnsureJsonRequest::class])->group(function () {
   });
 });
 
-Route::get('/test',function(){
-  \Log::error('test');
-  return 'logging';
-});

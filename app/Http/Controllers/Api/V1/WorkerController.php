@@ -12,22 +12,47 @@ use App\Http\Responses\ApiSuccessResponse;
 use App\Http\Responses\ApiErrorResponse;
 use App\Http\Resources\WorkerCollection;
 use App\Http\Resources\WorkerResource;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use DB;
 
 class WorkerController extends Controller
 {
-    public function index():JsonResponse
+    public function index(Request $request):JsonResponse
     {
         try{
-
+            $status = $request->input('status');
+            $name = $request->input('name');
             $worker = Worker::select(
                 'id',
                 'firstName',
                 'lastName',
                 'email'
                 )
-                ->with('workerEmploymentHistories')
-                ->get();
+                ->with('workerEmploymentHistories');
+            if(!empty($status)){
+                if($status == 'active'){
+                    $worker = $worker->whereDoesntHave('workerEmploymentHistories',function($query){
+                        $query->whereNull('endDate');
+                    });
+                        
+                }else if ($status == 'inactive'){
+                    $worker = $worker->whereHas('workerEmploymentHistories',function($query){
+                        $query->whereNull('endDate');
+                    });
+                        
+                }else{
+                    $statusCode = Response::HTTP_BAD_REQUEST;
+                    return new ApiErrorResponse('Invalid Value for status',$statusCode);
+                }
+            }
+            
+            if(!empty($name)){
+                $worker->where(function($query) use ($name){
+                    $query->where('firstName',$name)->orWhere('lastName',$name);
+                });
+            }
+
+            $worker = $worker->get();
             $workerResources  = WorkerResource::collection($worker);
             $responseData  = [
                 'workers'=>$workerResources 

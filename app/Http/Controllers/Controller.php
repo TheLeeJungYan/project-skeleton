@@ -7,19 +7,19 @@ use Illuminate\Support\Facades\DB;
 
 class Controller
 {
-    public function index(): JsonResponse
-    {
-        $database = null;
+    // public function index():JsonResponse
+    // {
+    //     $database = null;
 
-        try {
-            $database = (bool) DB::getPdo() ? 'OK' : 'FAILURE';
-        } catch (\Exception $exception) {
-            $database = 'FAILURE';
-        }
+    //     try {
+    //         $database = (bool) DB::getPdo() ? 'OK' : 'FAILURE';
+    //     } catch (\Exception $exception) {
+    //         $database = 'FAILURE';
+    //     }
 
-        return response()->json([
-            'container' => 'OK',
-            'database' => $database,
-        ]);
-    }
+    //     return response()->json([
+    //         'container' => 'OK',
+    //         'database' => $database,
+    //     ]);
+    // }
 }
